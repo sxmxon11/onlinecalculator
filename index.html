@@ -1,0 +1,166 @@
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Taschenrechner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            border-radius: 50%;
+            width: 88px;
+            height: 88px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0.5rem;
+            cursor: pointer;
+        }
+        .button-wide {
+            border-radius: 50px;
+            width: 188px;
+            height: 88px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0.5rem;
+            cursor: pointer;
+        }
+        .display {
+            grid-column: span 4;
+            color: white;
+            text-align: right;
+            padding: 1rem;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .iphone-frame {
+            width: 640px;
+            height: 1280px;
+            background-color: black;
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .notch {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 105px;
+            height: 30px;
+            background-color: black;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+    <div class="iphone-frame">
+        <div class="notch"></div>
+        <div class="grid grid-cols-4 gap-2">
+            <div class="display" id="display">0</div>
+            <div class="button bg-gray-400 text-black" onclick="clearDisplay()">C</div>
+            <div class="button bg-gray-400 text-black" onclick="toggleSign()">+/-</div>
+            <div class="button bg-gray-400 text-black" onclick="appendOperator('%')">%</div>
+            <div class="button bg-orange-500 text-white" onclick="appendOperator('/')">÷</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(7)">7</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(8)">8</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(9)">9</div>
+            <div class="button bg-orange-500 text-white" onclick="appendOperator('*')">×</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(4)">4</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(5)">5</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(6)">6</div>
+            <div class="button bg-orange-500 text-white" onclick="appendOperator('-')">-</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(1)">1</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(2)">2</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber(3)">3</div>
+            <div class="button bg-orange-500 text-white" onclick="appendOperator('+')">+</div>
+            <div class="button-wide bg-gray-600 text-white col-span-2 rounded-full" onclick="appendNumber(0)">0</div>
+            <div class="button bg-gray-600 text-white" onclick="appendNumber('.')">,</div>
+            <div class="button bg-orange-500 text-white" onclick="calculate()">=</div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '0';
+        let operator = null;
+        let previousInput = null;
+
+        function clearDisplay() {
+            currentInput = '0';
+            operator = null;
+            previousInput = null;
+            updateDisplay();
+        }
+
+        function appendNumber(number) {
+            if (currentInput === '0') {
+                currentInput = number.toString();
+            } else {
+                currentInput += number.toString();
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator !== null) {
+                calculate();
+            }
+            previousInput = currentInput;
+            currentInput = '0';
+            operator = op;
+        }
+
+        function toggleSign() {
+            currentInput = (parseFloat(currentInput) * -1).toString();
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (operator === null || previousInput === null) {
+                return;
+            }
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            operator = null;
+            previousInput = null;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.innerText = currentInput;
+        }
+    </script>
+</body>
+</html>
